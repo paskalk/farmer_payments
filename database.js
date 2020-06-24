@@ -11,7 +11,6 @@ const conn = new pool({
   })
 
   var insertToDatabase = function(req, res){
-    // console.log(req);
     conn.query(req['text'], req['values'])
     .then(results => {
         res.end(JSON.stringify(results.rowCount));
@@ -19,7 +18,6 @@ const conn = new pool({
     .catch(e => {
         console.error(e.stack);
         res.end();
-        // res.end(JSON.stringify(e.detail));
     })
 }
 
@@ -28,10 +26,8 @@ var executePostsgresQuery  = function(req, res){
         if (error) {
             console.log(error);
         }
-        // res.header("Access-Control-Allow-Origin", "*");
-        // console.log(req);
-        return results.rows;//res.json(results.rows);
+        return results.rows;
     })
 }
 
-module.exports = executePostsgresQuery;
+module.exports = conn;

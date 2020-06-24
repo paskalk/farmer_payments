@@ -43,7 +43,7 @@ class DataSource {
     }
 
     processRepaymentsList(repaymentsList){
-        console.log(repaymentsList);
+        
         for (let entry of repaymentsList){
             let query = '';
             let filterParams;
@@ -97,7 +97,7 @@ class DataSource {
     updateCustomerSummary(customer, season, amount){
         let query = 'Update customersummaries set totalrepaid = $1 where customerid = $2 and seasonid = $3';
 
-        console.log('pay skipped: ', amount, season);
+        console.log('totalrepaid: ', amount, 'season: ', season, 'customer:', customer);
 
         // this.executeInsertStatement(query, [amount, customer, season]);
         
