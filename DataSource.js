@@ -37,8 +37,8 @@ class DataSource {
     }
 
 
-    getRepaymentUploads(callback){     
-        this.executeStatement('select customerid, seasonid, date, amount, processed from repaymentuploads limit 3', null,
+    getRepaymentUploads(){     
+        this.executeStatement('select customerid, seasonid, date, amount, processed from repaymentuploads where customerid in (11,12)', null,
         repaymentsList => this.processRepaymentsList(repaymentsList));        
     }
 
@@ -54,40 +54,49 @@ class DataSource {
                 query = 'select customerid, seasonid, totalrepaid, totalcredit, totalcredit-totalrepaid as balance from customersummaries where customerid=$1 and totalrepaid <> totalcredit order by seasonid ';
                 filterParams = [entry['customerid']];
             }
+            //if customer in repayment upload list and doesn't have a balance e.g. cust 8
+                //insert record
+                //update customer summary
 
             this.executeStatement(
                 query,
                 filterParams,
-                seasonBalancesList => this.processSingleRepaymentEntries(seasonBalancesList, entry['amount'])
+                seasonBalancesList => this.processSingleCustomerRepaymentEntries(seasonBalancesList, entry['amount'])
             );
         }
     }
 
-    processSingleRepaymentEntries(seasonBalancesList, balanceAmount){
+    processSingleCustomerRepaymentEntries(seasonBalancesList, currentAmount){
         // console.log(seasonBalancesList);
         let seasonsCount = 1;
         let parentId = parseInt(Date.now().toString().substring(4));
         for (let season of seasonBalancesList){
-            let amountToPay;
-            if (balanceAmount > 0){
-                if (balanceAmount > season['amount'] && seasonsCount !== seasonBalancesList.length){
-                    amountToPay = season['amount'];
-                    balanceAmount -= season['amount'];
+            let amountToPay = 0;
+            // console.log(amountToPay);
+            if (currentAmount > 0){
+                console.log(currentAmount);
+                console.log(season['balance']);
+                console.log(Math.sign(season['balance']));
+                if (currentAmount > season['balance'] && Math.sign(season['balance']) !== -1 && seasonsCount !== seasonBalancesList.length){
+                    this.insertRepaymentRecord(season['customerid'], season['seasonid'], currentAmount, parentId);//60
+                    this.insertRepaymentRecord(season['customerid'], season['seasonid'], season['balance'] - currentAmount, parentId);//-40 
+                    currentAmount -= season['balance'];
+                    amountToPay = season['balance'];
                 } else {
-                    amountToPay = balanceAmount;
-                    balanceAmount -= season['amount'];
+                    this.insertRepaymentRecord(season['customerid'], season['seasonid'], currentAmount, parentId);
+                    amountToPay = currentAmount;
+                    currentAmount -= currentAmount;
                 }
-                
-                this.insertRepaymentRecord(season['customerid'], season['seasonid'], amountToPay, parentId)
 
                 //Any money remaining is added to last season
                 if (seasonsCount === seasonBalancesList.length){
-                    amountToPay += balanceAmount;
+                    amountToPay += currentAmount;
                 } 
-
                 season['totalrepaid'] += amountToPay;
+                // console.log(season['totalrepaid']);
                 
                 this.updateCustomerSummary(season['customerid'], season['seasonid'], season['totalrepaid']);
+                
             }
             
             seasonsCount++;
@@ -97,14 +106,14 @@ class DataSource {
     updateCustomerSummary(customer, season, amount){
         let query = 'Update customersummaries set totalrepaid = $1 where customerid = $2 and seasonid = $3';
 
-        console.log('totalrepaid: ', amount, 'season: ', season, 'customer:', customer);
+        console.log('Update/// totalrepaid: ', amount, 'season: ', season, 'customer:', customer);
 
-        // this.executeInsertStatement(query, [amount, customer, season]);
+        this.executeInsertStatement(query, [amount, customer, season]);
         
     }
 
     insertRepaymentRecord(customer, season, amount, parentid){
-        console.log('Amount Paid: ', amount, season, customer);
+        console.log('INSERT/// Amount: ', amount, 'season: ', season, 'customer:', customer);
 
         let query = 'insert into repayments (customerid, seasonid, amount, parentid) values ($1, $2, $3, $4)';
         this.executeInsertStatement(query, [customer, season, amount, parentid]);
@@ -112,7 +121,6 @@ class DataSource {
 
     executeStatement(query, params = null, onSuccessCallback){
         if (params !== null){
-            // console.log(params);
             this.pgConnection.query(query, params, (err, res) => {
                 if (err){
                     console.log(err);
@@ -142,8 +150,8 @@ class DataSource {
     }
 }
 
-// let data = new DataSource();
-// let temp =  data.getRepaymentUploads();
+let data = new DataSource();
+let temp =  data.getRepaymentUploads();
 
 
 module.exports = DataSource;

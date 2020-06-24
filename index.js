@@ -35,6 +35,11 @@ app.get("/customersummaries", function(req, res){
     });
 });
 
+app.get("/test", function(req, res){
+    data.getRepaymentUploads();
+    return res.json('Done');
+});
+
 app.post("/uploadRepaymentsList", function(req, res){
     console.log(req.body.dateTime);
     console.log(req.body['files']);
@@ -45,6 +50,7 @@ app.post("/uploadRepaymentsList", function(req, res){
     // console.log(x);
     // 
 
+    
     
     //     //return repayments in database
     // const fileData = require('./data.json');
