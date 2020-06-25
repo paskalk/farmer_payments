@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import {
     Grid,
-    Typography,
     Button,
     CircularProgress
 } from "@material-ui/core";
@@ -73,7 +72,7 @@ export default function Upload() {
     const handleDropzoneChange = (e) => {
         setFiles(e);
         console.log(e.file);
-        //fix bug 
+        
         if (files.length < 1){
             setDisabled(false);
         }
@@ -116,10 +115,7 @@ export default function Upload() {
 
     return (
         <Grid container component="main" className={"UploadSection"}>
-            {/* <Grid item md={8}> */}
-            {/* <Typography variant="h5" component="h5" align="left" color="primary">
-                File Upload
-            </Typography> */}
+           
             <div >
                 <form>
                     <Grid container spacing={2}>
@@ -153,7 +149,6 @@ export default function Upload() {
                     </Grid>
                 </form>
             </div>
-            {/* </Grid> */}
         </Grid>
     );
 }

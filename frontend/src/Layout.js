@@ -27,9 +27,6 @@ export default function Layout() {
         <div className={classes.root}>
             <AppBar position="static">
                 <Toolbar variant="dense">
-                {/* <Typography variant="h6" color="inherit">
-                    Farmers First
-                </Typography> */}
                 </Toolbar>
             </AppBar>
             

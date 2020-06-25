@@ -35,27 +35,15 @@ app.get("/customersummaries", function(req, res){
     });
 });
 
-app.get("/test", function(req, res){
+app.get("/repaymentuploads", function(req, res){
     data.getRepaymentUploads();
-    return res.json('Done');
+    return res.json({'status':'success'});
 });
 
 app.post("/uploadRepaymentsList", function(req, res){
-    console.log(req.body.dateTime);
-    console.log(req.body['files']);
-
-    // let x = (req.body.file);
-    // x = x.replace(/\n/g,'');
-    // x = x.replace(/\t/g,'');
-    // console.log(x);
-    // 
-
-    
-    
-    //     //return repayments in database
-    // const fileData = require('./data.json');
-    //     // console.log(keysToLower(fileData['RepaymentUploads']));
-    // data.processRepaymentsList(keysToLower(fileData['RepaymentUploads']));
+    const fileData = require('./data.json');
+    data.processRepaymentsList(keysToLower(fileData['RepaymentUploads']));
+    return res.json({'status':'success'});
 });
 
 
@@ -67,7 +55,7 @@ function keysToLower(obj){
         }));
 }
 
-console.log('Running on port ' + 8000);
+
 app.listen(8000);
 
 
