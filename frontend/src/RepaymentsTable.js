@@ -7,7 +7,7 @@ class RepaymentsTable extends React.Component {
     };
 
     componentDidMount() {
-        fetch(`http://localhost:8000/repayments`)
+        fetch(`http://backend:8000/repayments`)
         .then(response => response.json())
         .then((response)  => {
             if (response){      

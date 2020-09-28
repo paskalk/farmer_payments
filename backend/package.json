@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest test.js --watch",
-    "start": "nodemon index.js"
+    "start": "nodemon --legacy-watch index.js"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +16,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.7-alpha.3",
+    "nodemon": "^2.0.4",
     "pg": "^8.2.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"

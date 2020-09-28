@@ -11,7 +11,7 @@ class DataSource {
             database: process.env.PSQL_DATABASE,
             password: process.env.PSQL_PASSWORD,
             port: 5432,
-            ssl: false
+            // ssl: { rejectUnauthorized: false }
         })
     }
 

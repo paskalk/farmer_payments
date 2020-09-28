@@ -90,7 +90,7 @@ export default function Upload() {
             console.log(file.name);
         });
         
-        fetch(`http://localhost:8000/uploadRepaymentsList`,{
+        fetch(`http://backend:8000/uploadRepaymentsList`,{
             method: 'POST',
             body: formData
         })
